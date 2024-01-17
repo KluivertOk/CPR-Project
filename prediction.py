@@ -2,8 +2,7 @@ import pandas as pd
 from statsmodels.tsa.stattools import adfuller
 from statsmodels.tsa.arima.model import ARIMA
 
-
-def predict_crime_rate(selected_country, file_path='Prediction.csv', order=(1, 2, 2), forecast_steps=30):
+def predict_crime_rate(selected_country, file_path='Prediction.csv', order=(1, 2, 2), forecast_steps=5):
     # Read the CSV file
     df = pd.read_csv(file_path)
 

@@ -1,7 +1,11 @@
 import geopandas as gpd
+import pickle
+from pathlib import Path
 import pandas as pd
+import stauth
 import streamlit as st
 import plotly.express as ex
+import streamlit_authenticator as stauch
 from plotly import graph_objs as go
 from prediction import predict_crime_rate
 from statsmodels.tsa.arima.model import ARIMA
@@ -10,12 +14,27 @@ from shapely.geometry import Point
 data = pd.read_csv('CrimeIndex.csv')
 data['PercentageChange'] = ((data['Crime_index_2023'] - data['Crime_Index_2020']) / data['Crime_Index_2020']) * 100
 
-# Corrected line
-
-# Set up authentication
-# ... (Your authentication code here) ...
-
 page = st.sidebar.radio("Select Page", ["Map", "Histogram"])
+
+# names = ["Kluivert Okobi", "Kluvz Lean"]
+# usernames = ["kokobi", "klean"]
+#
+# file_path = Path(__file__).parent / "hashed_pw.pk1"
+# with file_path.open("rb") as file:
+#     hashed_passwords = pickle.load(file)
+#
+# authenticator = stauth.Authenticate(names, usernames, hashed_passwords,
+#                                     "sales_dashboard", "abcedef", cookie_expiry_days=30)
+#
+# name, authentication_status, usernames = authenticator.login("Login", "main")
+#
+# if authentication_status == False:
+#     st.error("Username/Password is incorrect")
+#
+# if authentication_status == None:
+#     st.warning("Please enter a username and password")
+#
+# if authentication_status:
 
 selected_country = None
 
@@ -76,7 +95,7 @@ elif page == 'Histogram':
     st.title('Crime Index Scatter Plot')
 
     # Corrected line to read from an Excel file
-    df = pd.read_excel('uas states.xlsx')
+    df = pd.read_excel('Histogram_Stats.xlsx')
 
     geometry = [Point(xy) if pd.notna(xy) and len(xy) == 2 else Point(0, 0) for xy in
                 zip(df['Crime Index 2020 - 2023'], df['Year'])]
