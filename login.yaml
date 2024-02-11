@@ -1,0 +1,24 @@
+cookie:
+  expiry_days: 30
+  key: kluivert_okobi
+  name: login
+credentials:
+  usernames:
+    JohnDoe:
+      email: johndoe@example.com
+      logged_in: false
+      name: John Doe
+      password: johndoe123
+    Kluivert:
+      email: kluivertokobi@yahoo.com
+      logged_in: true
+      name: Kluivert
+      password: kluivert20
+    Kokobi:
+      email: kluivertokobi@yahoo.com
+      logged_in: true
+      name: Kluivert Okobi
+      password: kluivert20
+preauthorized:
+  emails:
+  - kluivertokobi@yahoo.com
