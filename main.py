@@ -6,6 +6,7 @@ import streamlit as st
 import plotly.express as ex
 from plotly import graph_objs as go
 from ARIMA import predict_crime_rate
+from Prophet import predict_crime_rate_prophet
 from shapely.geometry import Point
 import yaml
 from yaml.loader import SafeLoader
@@ -71,12 +72,12 @@ if login_success:
 
             st.subheader("Crime Rate Forecasting (2024-2026)")
             st.write(selected_data)
+
             forecast_df = predict_crime_rate(selected_country)
             st.write(forecast_df)
 
-            # if st.sidebar.button('Logout'):
-            #     login_success = False
-            #     st.experimental_rerun()
+            prophet_df = predict_crime_rate_prophet(selected_country)
+            st.write(prophet_df)
 
 
         else:
