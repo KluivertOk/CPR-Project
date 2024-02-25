@@ -19,6 +19,11 @@ credentials:
       logged_in: true
       name: Kluivert Okobi
       password: kluivert20
+    vad:
+      email: hhhhhhh@gmail.com
+      logged_in: true
+      name: vad
+      password: test123456
 preauthorized:
   emails:
   - kluivertokobi@yahoo.com

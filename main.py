@@ -83,26 +83,37 @@ if login_success:
         else:
             st.warning("No data available for the selected country.")
 
-    elif page == 'Histogram':
-        st.title('Crime Index Scatter Plot')
 
+    elif page == 'Histogram':
+
+        st.title('Crime Index Scatter Plot')
         # Corrected line to read from an Excel file
         df = pd.read_excel('Histogram_Stats.xlsx')
-
         geometry = [Point(xy) if pd.notna(xy) and len(xy) == 2 else Point(0, 0) for xy in
                     zip(df['Crime Index 2020 - 2023'], df['Year'])]
         gdf = gpd.GeoDataFrame(df, geometry=geometry)
         # Scatter Plot
         st.write("### Scatter Plot of Crime Index for Selected Country")
         scatter_fig = ex.scatter(
+
             gdf,
             x='Year',
             y='Crime Index 2020 - 2023',
             color='Country',
             title=f'Crime Index Scatter Plot for',
             labels={'Crime Index 2020 - 2023': 'Crime Rate'},
+
         )
 
         st.plotly_chart(scatter_fig)
 
-# to run code type "streamlit run main.py" in terminal
+        # Display crime types
+        st.write("### Crime Types in Ireland")
+        df_crime_types = pd.read_csv('Ireland Data.csv')
+        crime_types = df_crime_types['OFFENCE'].unique()
+        st.write("List of Crime Types:")
+
+        for crime_type in crime_types:
+            st.write("- " + crime_type)
+
+    # to run code type "streamlit run main.py" in terminal

@@ -1,57 +1,39 @@
 import geopandas as gpd
 import pandas as pd
-import streamlit as st
 import plotly.express as px
 
-
-# Read the GeoJSON file for Ireland
+# Read the GeoJSON file into a GeoDataFrame
 ireland_geojson = gpd.read_file("ireland-counties.geojson")
 
-# Read the DataFrame containing the crime index data for Ireland
-crime_data = pd.read_csv("CrimeIndex.csv")
+# Read the additional data file containing region names
+region_data = pd.read_csv("Ireland Data.csv")
 
-# Merge the GeoDataFrame with the crime data
-ireland_geojson = ireland_geojson.merge(crime_data, left_on="name", right_on="Country", how="left")
+# Check the column names of both DataFrames
+print("ireland_geojson columns:", ireland_geojson.columns)
+print("region_data columns:", region_data.columns)
 
+# Make sure the 'REGION' column exists in the GeoDataFrame
+if 'REGION' not in ireland_geojson.columns:
+    raise ValueError("The 'REGION' column does not exist in the ireland_geojson GeoDataFrame.")
 
-# Create a GeoDataFrame for Dublin
-dublin_data = pd.DataFrame({
-    'City': ['Dublin'],
-    'Latitude': [53.349805],
-    'Longitude': [-6.26031]
-})
-dublin_gdf = gpd.GeoDataFrame(
-    dublin_data,
-    geometry=gpd.points_from_xy(dublin_data.Longitude, dublin_data.Latitude)
-)
+# Merge the region data with the GeoDataFrame
+ireland_geojson = ireland_geojson.merge(region_data, on="REGION", how="left")
+
+# Optionally, inspect the merged GeoDataFrame
+print(ireland_geojson.head())
 
 # Create the choropleth map
 fig = px.choropleth_mapbox(
     ireland_geojson,
     geojson=ireland_geojson.geometry,
     locations=ireland_geojson.index,
-    color='Crime_index_2023',
-    color_continuous_scale="RdBu_r",
+    color='GARDA DIVISION',  # Change 'region_name' to the column containing region names
     mapbox_style="carto-positron",
     zoom=5,
     center={"lat": 53.349805, "lon": -6.26031},
     opacity=0.5,
-    labels={'Crime_index_2023': 'Crime Index 2023'}
-
+    labels={'GARDA DIVISION': 'REGION'}  # Adjust label as needed
 )
 
-
-# Add Dublin marker to the map
-fig.add_trace(
-    px.scatter_mapbox(
-        dublin_gdf,
-        lat='Latitude',
-        lon='Longitude',
-        text='City',
-        color_discrete_sequence=["yellow"],
-        size_max=15
-    ).data[0]
-)
-
-# Display the map
-st.plotly_chart(fig)
+# Show the map
+fig.show()
