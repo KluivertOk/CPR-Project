@@ -74,15 +74,33 @@ if login_success:
             st.write(selected_data)
 
             forecast_df = predict_crime_rate(selected_country)
+
+            # Read population data from Prediction.csv
+            population_data = pd.read_csv('Prediction.csv')
+            population = population_data.loc[population_data['Country'] == selected_country, 'Population'].iloc[-1]
+
+            # Convert population values to numeric, handling errors by coercing invalid values to NaN
+            population_data['Population'] = pd.to_numeric(population_data['Population'], errors='coerce')
+
+            # Replace NaN values with a default population value or any other strategy
+            population_data['Population'].fillna(0, inplace=True)
+
+            # Convert the 'Population' column to float
+            population_data['Population'] = population_data['Population'].astype(float)
+
+            # Calculate crime index for ARIMA forecast results
+            forecast_df['Crime_Index'] = (forecast_df['Predicted'] / 100000) * population_data['Population']
+
             st.write(forecast_df)
 
             prophet_df = predict_crime_rate_prophet(selected_country)
-            st.write(prophet_df)
 
+            prophet_df['Crime_Index'] = (prophet_df['Predicted'] / 100000) * population_data['Population']
+
+            st.write(prophet_df)
 
         else:
             st.warning("No data available for the selected country.")
-
 
     elif page == 'Histogram':
 
