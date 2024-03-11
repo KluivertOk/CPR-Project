@@ -4,7 +4,8 @@ from statsmodels.tsa.stattools import adfuller
 from statsmodels.tsa.arima.model import ARIMA
 
 
-def predict_crime_rate(selected_country, file_path='Prediction.csv', order=(1, 2, 2), forecast_steps=3):
+def predict_crime_rate(selected_country, population_data, file_path='Prediction.csv', order=(1, 2, 2),
+                       forecast_steps=3):
     # Read the CSV file
     df = pd.read_csv(file_path)
 
@@ -14,7 +15,7 @@ def predict_crime_rate(selected_country, file_path='Prediction.csv', order=(1, 2
     # Check if there is data for the selected country
     if selected_data.empty:
         print(f"There is no data for {selected_country}")
-        return None
+        return None, None  # Return None for both forecast DataFrame and crime_index
 
     # Convert the 'crime_per_100k' column to numeric
     selected_data['crime_per_100k'] = pd.to_numeric(selected_data['crime_per_100k'], errors='coerce')
@@ -41,4 +42,8 @@ def predict_crime_rate(selected_country, file_path='Prediction.csv', order=(1, 2
         {'Date': pd.date_range(start=selected_data['date'].iloc[-1], periods=forecast_steps + 1, freq='Y')[1:],
          'Predicted': forecast})
 
-    return result_df
+    # Calculate the crime index
+    crime_index = (forecast / 100000) * \
+                  population_data.loc[population_data['Country'] == selected_country, 'Population'].iloc[-1]
+
+    return result_df, crime_index  # Return both forecast DataFrame and crime_index

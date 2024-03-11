@@ -73,14 +73,14 @@ if login_success:
             st.subheader("Crime Rate Forecasting (2024-2026)")
             st.write(selected_data)
 
-            forecast_df = predict_crime_rate(selected_country)
-
             # Read population data from Prediction.csv
             population_data = pd.read_csv('Prediction.csv')
-            population = population_data.loc[population_data['Country'] == selected_country, 'Population'].iloc[-1]
 
-            # Convert population values to numeric, handling errors by coercing invalid values to NaN
+            # Remove commas from the population column and convert it to numeric
+            population_data['Population'] = population_data['Population'].str.replace(',', '')
             population_data['Population'] = pd.to_numeric(population_data['Population'], errors='coerce')
+
+            population = population_data.loc[population_data['Country'] == selected_country, 'Population'].iloc[-1]
 
             # Replace NaN values with a default population value or any other strategy
             population_data['Population'].fillna(0, inplace=True)
@@ -88,14 +88,17 @@ if login_success:
             # Convert the 'Population' column to float
             population_data['Population'] = population_data['Population'].astype(float)
 
+            # Call predict_crime_rate function and store the results
+            forecast_df, crime_index = predict_crime_rate(selected_country, population_data, file_path='Prediction.csv')
+
             # Calculate crime index for ARIMA forecast results
-            forecast_df['Crime_Index'] = (forecast_df['Predicted'] / 100000) * population_data['Population']
+            forecast_df['Crime_Index'] = crime_index
 
             st.write(forecast_df)
 
-            prophet_df = predict_crime_rate_prophet(selected_country)
+            prophet_df = predict_crime_rate_prophet(selected_country, population_data, file_path='Prediction.csv')
 
-            prophet_df['Crime_Index'] = (prophet_df['Predicted'] / 100000) * population_data['Population']
+            prophet_df['Crime_Index'] = (prophet_df['Predicted'] / 100000) * population
 
             st.write(prophet_df)
 
