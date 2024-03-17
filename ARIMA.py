@@ -1,11 +1,36 @@
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 from statsmodels.tsa.stattools import adfuller
 from statsmodels.tsa.arima.model import ARIMA
+from itertools import product
+from sklearn.metrics import mean_absolute_error
 
 
-def predict_crime_rate(selected_country, population_data, file_path='Prediction.csv', order=(1, 2, 2),
-                       forecast_steps=3):
+def grid_search_arima(selected_data, p_range, d_range, q_range):
+    best_aic = np.inf
+    best_order = None
+
+    for p in p_range:
+        for d in d_range:
+            for q in q_range:
+                order = (p, d, q)
+                try:
+                    arima_model = ARIMA(selected_data, order=order)
+                    model = arima_model.fit()
+                    aic = model.aic
+
+                    if aic < best_aic:
+                        best_aic = aic
+                        best_order = order
+                except:
+                    continue
+
+    return best_order
+
+
+def predict_crime_rate(selected_country, population_data, file_path='Prediction.csv',
+                       p_range=range(1), d_range=range(1), q_range=range(5), forecast_steps=4):
     # Read the CSV file
     df = pd.read_csv(file_path)
 
@@ -30,12 +55,25 @@ def predict_crime_rate(selected_country, population_data, file_path='Prediction.
     results = adfuller(selected_data['crime_per_100k'].diff().diff().dropna())
     print('p-value:', results[1])
 
-    # ARIMA Model
-    arima_model = ARIMA(selected_data['crime_per_100k'], order=order)
+    # Perform grid search for ARIMA hyperparameters
+    best_order = grid_search_arima(selected_data['crime_per_100k'], p_range, d_range, q_range)
+
+    # ARIMA Model with best order
+    arima_model = ARIMA(selected_data['crime_per_100k'], order=best_order)
     model = arima_model.fit()
 
     # Forecasting
     forecast = model.forecast(steps=forecast_steps)
+
+    # Plot actual vs predicted values
+    plt.figure(figsize=(10, 6))
+    plt.plot(selected_data.index, selected_data['crime_per_100k'], label='Actual')
+    plt.plot(np.arange(len(selected_data), len(selected_data) + forecast_steps), forecast, label='Predicted')
+    plt.xlabel('Time')
+    plt.ylabel('Crime Rate per 100k')
+    plt.title('Actual vs Predicted Crime Rate')
+    plt.legend()
+    plt.show()
 
     # Format predicted values into a DataFrame
     result_df = pd.DataFrame(
@@ -45,5 +83,8 @@ def predict_crime_rate(selected_country, population_data, file_path='Prediction.
     # Calculate the crime index
     crime_index = (forecast / 100000) * \
                   population_data.loc[population_data['Country'] == selected_country, 'Population'].iloc[-1]
+
+    # Cap the crime index values at 100
+    crime_index = np.minimum(crime_index, 100)
 
     return result_df, crime_index  # Return both forecast DataFrame and crime_index
