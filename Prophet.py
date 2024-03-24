@@ -3,7 +3,7 @@ from prophet import Prophet
 import warnings
 
 
-def predict_crime_rate_prophet(selected_country, population_data, file_path='Prediction.csv', forecast_years=3):
+def predict_crime_rate_prophet(selected_country, population_data, file_path='Prediction.csv', forecast_years=5):
     # Suppress warnings
     warnings.filterwarnings("ignore")
 
@@ -28,7 +28,7 @@ def predict_crime_rate_prophet(selected_country, population_data, file_path='Pre
     m.fit(ireland_data)
 
     # Calculate the number of days in the forecast_years
-    forecast_days = forecast_years * 3
+    forecast_days = forecast_years * 1
 
     # Generate future dates for forecasting
     future = m.make_future_dataframe(periods=forecast_days, freq='Y')  # Forecast for forecast_years
