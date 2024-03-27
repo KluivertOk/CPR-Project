@@ -4,10 +4,11 @@ from pathlib import Path
 import pandas as pd
 import streamlit as st
 import plotly.express as ex
+from matplotlib import pyplot as plt
 from plotly import graph_objs as go
 from ARIMA import predict_crime_rate
 from Prophet import predict_crime_rate_prophet
-from shapely.geometry import Point
+import Ireland_Map
 import yaml
 from yaml.loader import SafeLoader
 from LoginPage import login  # Importing the login function from login.py
@@ -24,7 +25,7 @@ if login_success:
     data = pd.read_csv('CrimeIndex.csv')
     data['PercentageChange'] = ((data['Crime_index_2023'] - data['Crime_Index_2020']) / data['Crime_Index_2020']) * 100
 
-    page = st.sidebar.radio("Select Page", ["Map", "Histogram"])
+    page = st.sidebar.radio("Select Page", ["Map", "Ireland"])
 
     if page == "Map":
         st.title('Crime Index Map')
@@ -105,36 +106,120 @@ if login_success:
         else:
             st.warning("No data available for the selected country.")
 
-    elif page == 'Histogram':
+    elif page == 'Ireland':
+        Ireland_Map.show_map()
+        st.title('Ireland Data')
 
-        st.title('Crime Index Scatter Plot')
-        # Corrected line to read from an Excel file
-        df = pd.read_excel('Histogram_Stats.xlsx')
-        geometry = [Point(xy) if pd.notna(xy) and len(xy) == 2 else Point(0, 0) for xy in
-                    zip(df['Crime Index 2020 - 2023'], df['Year'])]
-        gdf = gpd.GeoDataFrame(df, geometry=geometry)
-        # Scatter Plot
-        st.write("### Scatter Plot of Crime Index for Selected Country")
-        scatter_fig = ex.scatter(
+        # Display the histogram of offence frequencies for the EASTERN REGION
+        st.title('Frequency of Offences in the EASTERN REGION')
+        # Read the CSV file
+        df_offences = pd.read_csv("Ireland Data.csv")
+        # Filter data for the EASTERN REGION
+        eastern_region_data = df_offences[df_offences['REGION'] == 'EASTERN REGION']
+        # Select only the columns containing quarter data
+        quarter_columns = eastern_region_data.columns[5:]
+        # Convert quarter data to integer type and sum occurrences across all quarters
+        eastern_region_data[quarter_columns] = eastern_region_data[quarter_columns].apply(pd.to_numeric,
+                                                                                          errors='coerce')
+        offence_counts = eastern_region_data.groupby('TYPE OF OFFENCE')[quarter_columns].sum().sum(axis=1)
+        # Sort offences by frequency in descending order
+        offence_counts = offence_counts.sort_values(ascending=False)
+        # Plotting
+        offence_counts.plot(kind='bar', figsize=(16, 8), color='skyblue')
+        plt.title('Frequency of Offences in the EASTERN REGION from 2003Q1 to 2019Q3')
+        plt.xlabel('Type of Offence')
+        plt.ylabel('Frequency')
+        plt.xticks(rotation=45, ha='right')
+        plt.tight_layout()
+        st.pyplot(plt)  # Display the histogram using Streamlit's pyplot function
 
-            gdf,
-            x='Year',
-            y='Crime Index 2020 - 2023',
-            color='Country',
-            title=f'Crime Index Scatter Plot for',
-            labels={'Crime Index 2020 - 2023': 'Crime Rate'},
+        ("The EASTERN REGION's prodominant crimes are THEFT AND RELATED OFFENCES, PUBLIC ORDER AND OTHER SOCIAL CODE OFFENCES and DAMAGE TO PROPERTY AND ENVIRONMENT")
+        ("The reasons this maybe coould be because the Eastern Region, particularly Dublin, has a higher population density and is more urbanized compared to other regions in Ireland.")
+        ("Higher population density often correlates with increased opportunities for theft, public order offenses, and property damage.")
 
-        )
 
-        st.plotly_chart(scatter_fig)
+        # Display the histogram of offence frequencies for the SOUTHERN REGION
+        st.title('Frequency of Offences in the SOUTHERN REGION')
+        # Read the CSV file
+        df_offences = pd.read_csv("Ireland Data.csv")
+        # Filter data for the SOUTHERN REGION
+        southern_region_data = df_offences[df_offences['REGION'] == 'SOUTHERN REGION']
+        # Select only the columns containing quarter data
+        quarter_columns_southern = southern_region_data.columns[5:]
+        # Convert quarter data to integer type and sum occurrences across all quarters
+        southern_region_data[quarter_columns_southern] = southern_region_data[quarter_columns_southern].apply(
+            pd.to_numeric, errors='coerce')
+        offence_counts_southern = southern_region_data.groupby('TYPE OF OFFENCE')[quarter_columns_southern].sum().sum(
+            axis=1)
+        # Sort offences by frequency in descending order
+        offence_counts_southern = offence_counts_southern.sort_values(ascending=False)
+        # Plotting
+        offence_counts_southern.plot(kind='bar', figsize=(16, 8), color='skyblue')
+        plt.title('Frequency of Offences in the SOUTHERN REGION from 2003Q1 to 2019Q3')
+        plt.xlabel('Type of Offence')
+        plt.ylabel('Frequency')
+        plt.xticks(rotation=45, ha='right')
+        plt.tight_layout()
+        st.pyplot(plt)  # Display the histogram using Streamlit's pyplot function
 
-        # Display crime types
-        st.write("### Crime Types in Ireland")
-        df_crime_types = pd.read_csv('Ireland Data.csv')
-        crime_types = df_crime_types['OFFENCE'].unique()
-        st.write("List of Crime Types:")
+        ("The SOUTHERN REGION's prodominant crimes are THEFT AND RELATED OFFENCES, PUBLIC ORDER AND OTHER SOCIAL CODE OFFENCES and DAMAGE TO PROPERTY AND ENVIRONMENT")
+        ("Urban areas within the Southern Region, such as Cork and Limerick, may have higher population densities and more significant commercial activities, making them attractive targets for theft-related crimes")
+        ("Major transportation networks, ports, and routes in the Southern Region can facilitate easier movement for criminals, making it a focal point for theft-related crimes.")
 
-        for crime_type in crime_types:
-            st.write("- " + crime_type)
+        # Display the histogram of offence frequencies for the NORTHERN REGION
+        st.title('Frequency of Offences in the NORTHERN REGION')
+        # Read the CSV file
+        df_offences = pd.read_csv("Ireland Data.csv")
+        # Filter data for the NORTHERN REGION
+        northern_region_data = df_offences[df_offences['REGION'] == 'NORTHERN REGION']
+        # Select only the columns containing quarter data
+        quarter_columns_northern = northern_region_data.columns[5:]
+        # Convert quarter data to integer type and sum occurrences across all quarters
+        northern_region_data[quarter_columns_northern] = northern_region_data[quarter_columns_northern].apply(
+            pd.to_numeric, errors='coerce')
+        offence_counts_northern = northern_region_data.groupby('TYPE OF OFFENCE')[quarter_columns_northern].sum().sum(
+            axis=1)
+        # Sort offences by frequency in descending order
+        offence_counts_northern = offence_counts_northern.sort_values(ascending=False)
+        # Plotting
+        offence_counts_northern.plot(kind='bar', figsize=(16, 8), color='skyblue')
+        plt.title('Frequency of Offences in the NORTHERN REGION from 2003Q1 to 2019Q3')
+        plt.xlabel('Type of Offence')
+        plt.ylabel('Frequency')
+        plt.xticks(rotation=45, ha='right')
+        plt.tight_layout()
+        st.pyplot(plt)  # Display the histogram using Streamlit's pyplot function
+
+        ("The NORTHERN REGION's prodominant crimes are THEFT AND RELATED OFFENCES, PUBLIC ORDER AND OTHER SOCIAL CODE OFFENCES and DAMAGE TO PROPERTY AND ENVIRONMENT")
+        ("The Northern Region comprises predominantly rural and border areas with limited resources, remote communities, and challenges related to cross-border activities.")
+        ("These areas might be more susceptible to theft-related crimes, public order offenses, and property damage due to reduced police presence, limited infrastructure, and geographical vulnerabilities.")
+
+        # Display the histogram of offence frequencies for the WESTERN REGION
+        st.title('Frequency of Offences in the WESTERN REGION')
+        # Read the CSV file
+        df_offences = pd.read_csv("Ireland Data.csv")
+        # Filter data for the WESTERN REGION
+        western_region_data = df_offences[df_offences['REGION'] == 'WESTERN REGION']
+        # Select only the columns containing quarter data
+        quarter_columns_western = western_region_data.columns[5:]
+        # Convert quarter data to integer type and sum occurrences across all quarters
+        western_region_data[quarter_columns_western] = western_region_data[quarter_columns_western].apply(pd.to_numeric,
+                                                                                                          errors='coerce')
+        offence_counts_western = western_region_data.groupby('TYPE OF OFFENCE')[quarter_columns_western].sum().sum(
+            axis=1)
+        # Sort offences by frequency in descending order
+        offence_counts_western = offence_counts_western.sort_values(ascending=False)
+        # Plotting
+        offence_counts_western.plot(kind='bar', figsize=(16, 8), color='skyblue')
+        plt.title('Frequency of Offences in the WESTERN REGION from 2003Q1 to 2019Q3')
+        plt.xlabel('Type of Offence')
+        plt.ylabel('Frequency')
+        plt.xticks(rotation=45, ha='right')
+        plt.tight_layout()
+        st.pyplot(plt)  # Display the histogram using Streamlit's pyplot function
+
+        ("The WESTEN REGION's prodominant crimes are THEFT AND RELATED OFFENCES, PUBLIC ORDER AND OTHER SOCIAL CODE OFFENCES and DAMAGE TO PROPERTY AND ENVIRONMENT")
+        ("The Western Region consists of predominantly rural, coastal, and remote areas with dispersed populations, limited infrastructure, and reduced police presence.")
+        ("These geographical factors can contribute to increased opportunities for theft-related crimes, public order offenses, and property damage due to limited surveillance and access to resources.")
 
     # to run code type "streamlit run main.py" in terminal
