@@ -19,6 +19,11 @@ credentials:
       logged_in: true
       name: Kluivert Okobi
       password: kluivert20
+    Random:
+      email: B00127610gmail.com
+      logged_in: false
+      name: Random
+      password: 'Random '
     vad:
       email: hhhhhhh@gmail.com
       logged_in: true

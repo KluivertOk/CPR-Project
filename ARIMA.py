@@ -23,7 +23,8 @@ def grid_search_arima(selected_data, p_range, d_range, q_range):
                     if aic < best_aic:
                         best_aic = aic
                         best_order = order
-                except:
+                except Exception as e:
+                    print(f"Error for order {order}: {e}")   # handling errors
                     continue
 
     return best_order
