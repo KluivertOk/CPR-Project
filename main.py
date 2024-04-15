@@ -106,120 +106,96 @@ if login_success:
         else:
             st.warning("No data available for the selected country.")
 
+
     elif page == 'Ireland':
         Ireland_Map.show_map()
-        st.title('Ireland Data')
-
         # Display the histogram of offence frequencies for the EASTERN REGION
         st.title('Frequency of Offences in the EASTERN REGION')
-        # Read the CSV file
         df_offences = pd.read_csv("Ireland Data.csv")
-        # Filter data for the EASTERN REGION
         eastern_region_data = df_offences[df_offences['REGION'] == 'EASTERN REGION']
-        # Select only the columns containing quarter data
         quarter_columns = eastern_region_data.columns[5:]
-        # Convert quarter data to integer type and sum occurrences across all quarters
         eastern_region_data[quarter_columns] = eastern_region_data[quarter_columns].apply(pd.to_numeric,
                                                                                           errors='coerce')
         offence_counts = eastern_region_data.groupby('TYPE OF OFFENCE')[quarter_columns].sum().sum(axis=1)
-        # Sort offences by frequency in descending order
-        offence_counts = offence_counts.sort_values(ascending=False)
-        # Plotting
-        offence_counts.plot(kind='bar', figsize=(16, 8), color='skyblue')
-        plt.title('Frequency of Offences in the EASTERN REGION from 2003Q1 to 2019Q3')
-        plt.xlabel('Type of Offence')
-        plt.ylabel('Frequency')
-        plt.xticks(rotation=45, ha='right')
+        offence_counts = offence_counts.sort_values(ascending=True)
+        plt.figure(figsize=(16, 10))  # Adjust the width here
+        offence_counts.plot(kind='barh', color='skyblue')
+        plt.title('Frequency of Offences in the EASTERN REGION from 2003Q1 to 2019Q3', fontsize=18)
+        plt.xlabel('Frequency', fontsize=18)
+        plt.ylabel('Type of Offence', fontsize=18)
+        plt.yticks(fontsize=12)
         plt.tight_layout()
-        st.pyplot(plt)  # Display the histogram using Streamlit's pyplot function
+        st.pyplot(plt)
+        st.write("The EASTERN REGION's predominant crimes are THEFT AND RELATED OFFENCES, PUBLIC ORDER AND OTHER SOCIAL CODE OFFENCES and DAMAGE TO PROPERTY AND ENVIRONMENT")
+        st.write("The reasons this may be could be because the Eastern Region, particularly Dublin, has a higher population density and is more urbanized compared to other regions in Ireland.")
+        st.write("Higher population density often correlates with increased opportunities for theft, public order offenses, and property damage.")
 
-        ("The EASTERN REGION's prodominant crimes are THEFT AND RELATED OFFENCES, PUBLIC ORDER AND OTHER SOCIAL CODE OFFENCES and DAMAGE TO PROPERTY AND ENVIRONMENT")
-        ("The reasons this maybe coould be because the Eastern Region, particularly Dublin, has a higher population density and is more urbanized compared to other regions in Ireland.")
-        ("Higher population density often correlates with increased opportunities for theft, public order offenses, and property damage.")
 
 
         # Display the histogram of offence frequencies for the SOUTHERN REGION
         st.title('Frequency of Offences in the SOUTHERN REGION')
-        # Read the CSV file
         df_offences = pd.read_csv("Ireland Data.csv")
-        # Filter data for the SOUTHERN REGION
         southern_region_data = df_offences[df_offences['REGION'] == 'SOUTHERN REGION']
-        # Select only the columns containing quarter data
         quarter_columns_southern = southern_region_data.columns[5:]
-        # Convert quarter data to integer type and sum occurrences across all quarters
         southern_region_data[quarter_columns_southern] = southern_region_data[quarter_columns_southern].apply(
             pd.to_numeric, errors='coerce')
-        offence_counts_southern = southern_region_data.groupby('TYPE OF OFFENCE')[quarter_columns_southern].sum().sum(
-            axis=1)
-        # Sort offences by frequency in descending order
-        offence_counts_southern = offence_counts_southern.sort_values(ascending=False)
-        # Plotting
-        offence_counts_southern.plot(kind='bar', figsize=(16, 8), color='skyblue')
-        plt.title('Frequency of Offences in the SOUTHERN REGION from 2003Q1 to 2019Q3')
-        plt.xlabel('Type of Offence')
-        plt.ylabel('Frequency')
-        plt.xticks(rotation=45, ha='right')
+        offence_counts_southern = southern_region_data.groupby('TYPE OF OFFENCE')[quarter_columns_southern].sum().sum(axis=1)
+        offence_counts_southern = offence_counts_southern.sort_values(ascending=True)
+        plt.figure(figsize=(16, 10))  # Adjust the width here
+        offence_counts_southern.plot(kind='barh', color='skyblue')
+        plt.title('Frequency of Offences in the SOUTHERN REGION from 2003Q1 to 2019Q3', fontsize=18)
+        plt.xlabel('Frequency', fontsize=18)
+        plt.ylabel('Type of Offence', fontsize=18)
+        plt.yticks(fontsize=12)
         plt.tight_layout()
-        st.pyplot(plt)  # Display the histogram using Streamlit's pyplot function
+        st.pyplot(plt)
+        st.write("The SOUTHERN REGION's predominant crimes are THEFT AND RELATED OFFENCES, PUBLIC ORDER AND OTHER SOCIAL CODE OFFENCES and DAMAGE TO PROPERTY AND ENVIRONMENT")
+        st.write("Urban areas within the Southern Region, such as Cork and Limerick, may have higher population densities and more significant commercial activities, making them attractive targets for theft-related crimes")
+        st.write("Major transportation networks, ports, and routes in the Southern Region can facilitate easier movement for criminals, making it a focal point for theft-related crimes.")
 
-        ("The SOUTHERN REGION's prodominant crimes are THEFT AND RELATED OFFENCES, PUBLIC ORDER AND OTHER SOCIAL CODE OFFENCES and DAMAGE TO PROPERTY AND ENVIRONMENT")
-        ("Urban areas within the Southern Region, such as Cork and Limerick, may have higher population densities and more significant commercial activities, making them attractive targets for theft-related crimes")
-        ("Major transportation networks, ports, and routes in the Southern Region can facilitate easier movement for criminals, making it a focal point for theft-related crimes.")
 
         # Display the histogram of offence frequencies for the NORTHERN REGION
         st.title('Frequency of Offences in the NORTHERN REGION')
-        # Read the CSV file
         df_offences = pd.read_csv("Ireland Data.csv")
-        # Filter data for the NORTHERN REGION
         northern_region_data = df_offences[df_offences['REGION'] == 'NORTHERN REGION']
-        # Select only the columns containing quarter data
         quarter_columns_northern = northern_region_data.columns[5:]
-        # Convert quarter data to integer type and sum occurrences across all quarters
         northern_region_data[quarter_columns_northern] = northern_region_data[quarter_columns_northern].apply(
             pd.to_numeric, errors='coerce')
-        offence_counts_northern = northern_region_data.groupby('TYPE OF OFFENCE')[quarter_columns_northern].sum().sum(
-            axis=1)
-        # Sort offences by frequency in descending order
-        offence_counts_northern = offence_counts_northern.sort_values(ascending=False)
+        offence_counts_northern = northern_region_data.groupby('TYPE OF OFFENCE')[quarter_columns_northern].sum().sum(axis=1)
+        offence_counts_northern = offence_counts_northern.sort_values(ascending=True)
         # Plotting
-        offence_counts_northern.plot(kind='bar', figsize=(16, 8), color='skyblue')
-        plt.title('Frequency of Offences in the NORTHERN REGION from 2003Q1 to 2019Q3')
-        plt.xlabel('Type of Offence')
-        plt.ylabel('Frequency')
-        plt.xticks(rotation=45, ha='right')
+        plt.figure(figsize=(16, 10))  # Adjust the width here
+        offence_counts_northern.plot(kind='barh', color='skyblue')
+        plt.title('Frequency of Offences in the NORTHERN REGION from 2003Q1 to 2019Q3', fontsize=18)
+        plt.xlabel('Frequency', fontsize=18)
+        plt.ylabel('Type of Offence', fontsize=18)
+        plt.yticks(fontsize=12)
         plt.tight_layout()
-        st.pyplot(plt)  # Display the histogram using Streamlit's pyplot function
+        st.pyplot(plt)
+        st.write("The NORTHERN REGION's predominant crimes are THEFT AND RELATED OFFENCES, PUBLIC ORDER AND OTHER SOCIAL CODE OFFENCES and DAMAGE TO PROPERTY AND ENVIRONMENT")
+        st.write("The Northern Region comprises predominantly rural and border areas with limited resources, remote communities, and challenges related to cross-border activities.")
+        st.write("These areas might be more susceptible to theft-related crimes, public order offenses, and property damage due to reduced police presence, limited infrastructure, and geographical vulnerabilities.")
 
-        ("The NORTHERN REGION's prodominant crimes are THEFT AND RELATED OFFENCES, PUBLIC ORDER AND OTHER SOCIAL CODE OFFENCES and DAMAGE TO PROPERTY AND ENVIRONMENT")
-        ("The Northern Region comprises predominantly rural and border areas with limited resources, remote communities, and challenges related to cross-border activities.")
-        ("These areas might be more susceptible to theft-related crimes, public order offenses, and property damage due to reduced police presence, limited infrastructure, and geographical vulnerabilities.")
 
         # Display the histogram of offence frequencies for the WESTERN REGION
         st.title('Frequency of Offences in the WESTERN REGION')
-        # Read the CSV file
         df_offences = pd.read_csv("Ireland Data.csv")
-        # Filter data for the WESTERN REGION
         western_region_data = df_offences[df_offences['REGION'] == 'WESTERN REGION']
-        # Select only the columns containing quarter data
         quarter_columns_western = western_region_data.columns[5:]
-        # Convert quarter data to integer type and sum occurrences across all quarters
         western_region_data[quarter_columns_western] = western_region_data[quarter_columns_western].apply(pd.to_numeric,
                                                                                                           errors='coerce')
         offence_counts_western = western_region_data.groupby('TYPE OF OFFENCE')[quarter_columns_western].sum().sum(
             axis=1)
-        # Sort offences by frequency in descending order
-        offence_counts_western = offence_counts_western.sort_values(ascending=False)
-        # Plotting
-        offence_counts_western.plot(kind='bar', figsize=(16, 8), color='skyblue')
-        plt.title('Frequency of Offences in the WESTERN REGION from 2003Q1 to 2019Q3')
-        plt.xlabel('Type of Offence')
-        plt.ylabel('Frequency')
-        plt.xticks(rotation=45, ha='right')
+        offence_counts_western = offence_counts_western.sort_values(ascending=True)
+        plt.figure(figsize=(16, 14))  # Adjust the width here
+        offence_counts_western.plot(kind='barh', color='skyblue')
+        plt.title('Frequency of Offences in the WESTERN REGION from 2003Q1 to 2019Q3', fontsize=18)
+        plt.xlabel('Frequency', fontsize=18)
+        plt.ylabel('Type of Offence', fontsize=18)
+        plt.yticks(fontsize=12)
         plt.tight_layout()
-        st.pyplot(plt)  # Display the histogram using Streamlit's pyplot function
-
-        ("The WESTEN REGION's prodominant crimes are THEFT AND RELATED OFFENCES, PUBLIC ORDER AND OTHER SOCIAL CODE OFFENCES and DAMAGE TO PROPERTY AND ENVIRONMENT")
-        ("The Western Region consists of predominantly rural, coastal, and remote areas with dispersed populations, limited infrastructure, and reduced police presence.")
-        ("These geographical factors can contribute to increased opportunities for theft-related crimes, public order offenses, and property damage due to limited surveillance and access to resources.")
-
+        st.pyplot(plt)
+        st.write("The WESTERN REGION's predominant crimes are THEFT AND RELATED OFFENCES, PUBLIC ORDER AND OTHER SOCIAL CODE OFFENCES and DAMAGE TO PROPERTY AND ENVIRONMENT")
+        st.write("The Western Region consists of predominantly rural, coastal, and remote areas with dispersed populations, limited infrastructure, and reduced police presence.")
+        st.write("These geographical factors can contribute to increased opportunities for theft-related crimes, public order offenses, and property damage due to limited surveillance and access to resources.")
     # to run code type "streamlit run main.py" in terminal
