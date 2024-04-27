@@ -202,17 +202,28 @@ if login_success:
     elif page == 'Ireland':
         Ireland_Map.show_map()
         st.title('Crime Statistics by Region')
+
+        # Display population size and facts about Ireland in the side menu
+        st.sidebar.title("Ireland Population and Facts")
+        st.sidebar.subheader("Population Size")
+        st.sidebar.write("The population of Ireland is approximately 4.9 million.")
+
+        st.sidebar.subheader("Facts about Ireland")
+        st.sidebar.write("1. Ireland is known as the Emerald Isle due to its lush greenery.")
+        st.sidebar.write("2. The country has a rich history and cultural heritage, with many ancient landmarks and traditions.")
+        st.sidebar.write("3. Dublin is the capital city of Ireland and is famous for its vibrant nightlife and historic landmarks like Trinity College and the Guinness Storehouse.")
+        st.sidebar.write("4. Ireland is renowned for its literature, music, and folklore, with famous literary figures such as James Joyce, W.B. Yeats, and Samuel Beckett.")
+        st.sidebar.write("5. The Irish economy has undergone significant growth in recent decades, with industries such as technology, pharmaceuticals, and finance driving economic development.")
+
         # Add a selection dropdown for regions
-        selected_region = st.selectbox("Select a region",
-                                       ["EASTERN REGION", "SOUTHERN REGION", "NORTHERN REGION", "WESTERN REGION"])
+        selected_region = st.selectbox("Select a region", ["EASTERN REGION", "SOUTHERN REGION", "NORTHERN REGION", "WESTERN REGION"])
         if selected_region == "EASTERN REGION":
             # Display the histogram of offence frequencies for the EASTERN REGION
             st.title('Frequency of Offences in the EASTERN REGION')
             df_offences = pd.read_csv("Ireland Data.csv")
             eastern_region_data = df_offences[df_offences['REGION'] == 'EASTERN REGION']
             quarter_columns = eastern_region_data.columns[5:]
-            eastern_region_data[quarter_columns] = eastern_region_data[quarter_columns].apply(pd.to_numeric,
-                                                                                              errors='coerce')
+            eastern_region_data[quarter_columns] = eastern_region_data[quarter_columns].apply(pd.to_numeric,errors='coerce')
             offence_counts = eastern_region_data.groupby('TYPE OF OFFENCE')[quarter_columns].sum().sum(axis=1)
             offence_counts = offence_counts.sort_values(ascending=True)
             plt.figure(figsize=(16, 10))  # Adjust the width here
@@ -233,10 +244,8 @@ if login_success:
             df_offences = pd.read_csv("Ireland Data.csv")
             southern_region_data = df_offences[df_offences['REGION'] == 'SOUTHERN REGION']
             quarter_columns_southern = southern_region_data.columns[5:]
-            southern_region_data[quarter_columns_southern] = southern_region_data[quarter_columns_southern].apply(
-                pd.to_numeric, errors='coerce')
-            offence_counts_southern = southern_region_data.groupby('TYPE OF OFFENCE')[quarter_columns_southern].sum().sum(
-                axis=1)
+            southern_region_data[quarter_columns_southern] = southern_region_data[quarter_columns_southern].apply(pd.to_numeric, errors='coerce')
+            offence_counts_southern = southern_region_data.groupby('TYPE OF OFFENCE')[quarter_columns_southern].sum().sum(axis=1)
             offence_counts_southern = offence_counts_southern.sort_values(ascending=True)
             plt.figure(figsize=(16, 10))  # Adjust the width here
             offence_counts_southern.plot(kind='barh', color='skyblue')
@@ -256,10 +265,8 @@ if login_success:
             df_offences = pd.read_csv("Ireland Data.csv")
             northern_region_data = df_offences[df_offences['REGION'] == 'NORTHERN REGION']
             quarter_columns_northern = northern_region_data.columns[5:]
-            northern_region_data[quarter_columns_northern] = northern_region_data[quarter_columns_northern].apply(
-                pd.to_numeric, errors='coerce')
-            offence_counts_northern = northern_region_data.groupby('TYPE OF OFFENCE')[quarter_columns_northern].sum().sum(
-                axis=1)
+            northern_region_data[quarter_columns_northern] = northern_region_data[quarter_columns_northern].apply(pd.to_numeric, errors='coerce')
+            offence_counts_northern = northern_region_data.groupby('TYPE OF OFFENCE')[quarter_columns_northern].sum().sum(axis=1)
             offence_counts_northern = offence_counts_northern.sort_values(ascending=True)
             # Plotting
             plt.figure(figsize=(16, 10))  # Adjust the width here
@@ -280,13 +287,12 @@ if login_success:
             df_offences = pd.read_csv("Ireland Data.csv")
             western_region_data = df_offences[df_offences['REGION'] == 'WESTERN REGION']
             quarter_columns_western = western_region_data.columns[5:]
-            western_region_data[quarter_columns_western] = western_region_data[quarter_columns_western].apply(pd.to_numeric,
-                                                                                                              errors='coerce')
-            offence_counts_western = western_region_data.groupby('TYPE OF OFFENCE')[quarter_columns_western].sum().sum(
-                axis=1)
+            western_region_data[quarter_columns_western] = western_region_data[quarter_columns_western].apply(pd.to_numeric,errors='coerce')
+            offence_counts_western = western_region_data.groupby('TYPE OF OFFENCE')[quarter_columns_western].sum().sum(axis=1)
             offence_counts_western = offence_counts_western.sort_values(ascending=True)
             plt.figure(figsize=(16, 14))  # Adjust the width here
             offence_counts_western.plot(kind='barh', color='skyblue')
+
             plt.title('Frequency of Offences in the WESTERN REGION from 2003Q1 to 2019Q3', fontsize=18)
             plt.xlabel('Frequency', fontsize=18)
             plt.ylabel('Type of Offence', fontsize=18)
