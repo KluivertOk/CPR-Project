@@ -2,7 +2,6 @@ import pandas as pd
 from prophet import Prophet
 import warnings
 
-
 def predict_crime_rate_prophet(selected_country, population_data, file_path='Prediction.csv', forecast_years=5):
     # Suppress warnings
     warnings.filterwarnings("ignore")

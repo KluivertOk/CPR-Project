@@ -1,6 +1,3 @@
-import geopandas as gpd
-import pickle
-from pathlib import Path
 import pandas as pd
 import streamlit as st
 import plotly.express as ex
@@ -302,4 +299,5 @@ if login_success:
             st.write("The WESTERN REGION's predominant crimes are THEFT AND RELATED OFFENCES, PUBLIC ORDER AND OTHER SOCIAL CODE OFFENCES and DAMAGE TO PROPERTY AND ENVIRONMENT")
             st.write( "The Western Region consists of predominantly rural, coastal, and remote areas with dispersed populations, limited infrastructure, and reduced police presence.")
             st.write("These geographical factors can contribute to increased opportunities for theft-related crimes, public order offenses, and property damage due to limited surveillance and access to resources.")
+
         # to run code type "streamlit run main.py" in terminal
